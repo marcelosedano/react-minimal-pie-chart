@@ -293,6 +293,37 @@ exports[`Dist bundle is unchanged 1`] = `
     });
   }
 
+  function renderTitles(data, props) {
+    var titlePosition = extractPercentage(props.radius, props.titlePosition);
+    return data.map(function (dataEntry, index) {
+      var startAngle = props.startAngle + dataEntry.startOffset;
+      var halfAngle = startAngle + dataEntry.degrees / 2;
+      var halfAngleRadians = degreesToRadians(halfAngle);
+      var dx = Math.cos(halfAngleRadians) * titlePosition;
+      var dy = Math.sin(halfAngleRadians) * titlePosition; // This object is passed as props to the \\"title\\" component
+
+      var titleProps = {
+        key: \\"title-\\" + (dataEntry.key || index),
+        x: props.cx,
+        y: props.cy,
+        dx: dx,
+        dy: dy,
+        textAnchor: evaluateLabelTextAnchor({
+          lineWidth: props.lineWidth,
+          labelPosition: props.titlePosition,
+          labelHorizontalShift: dx
+        }),
+        data: data,
+        dataIndex: index,
+        color: dataEntry.color,
+        style: props.titleStyle
+      };
+      return (// eslint-disable-next-line react/jsx-key
+        React__default.createElement(ReactMinimalPieChartLabel, titleProps, dataEntry.title)
+      );
+    });
+  }
+
   function renderSegments(data, props, hide) {
     var style = props.segmentsStyle;
 
@@ -364,6 +395,22 @@ exports[`Dist bundle is unchanged 1`] = `
     return paths;
   }
 
+  function getVerticalSegmentPositioningStartAngle(data) {
+    return 90 - data[0].degrees / 2;
+  }
+
+  function processProps(props, data) {
+    var processedProps = props;
+
+    if (props.verticalSegmentPositioning) {
+      processedProps = _extends({}, props, {
+        startAngle: getVerticalSegmentPositioningStartAngle(data)
+      });
+    }
+
+    return processedProps;
+  }
+
   var ReactMinimalPieChart =
   /*#__PURE__*/
   function (_Component) {
@@ -421,6 +468,7 @@ exports[`Dist bundle is unchanged 1`] = `
       }
 
       var extendedData = extendData(props);
+      props = processProps(props, extendedData);
       return React__default.createElement(\\"div\\", {
         className: props.className,
         style: props.style
@@ -431,7 +479,7 @@ exports[`Dist bundle is unchanged 1`] = `
         style: {
           display: 'block'
         }
-      }, renderSegments(extendedData, props, this.hideSegments), props.label && renderLabels(extendedData, props), props.injectSvg && props.injectSvg()), props.children);
+      }, renderSegments(extendedData, props, this.hideSegments), props.label && renderLabels(extendedData, props), props.title && renderTitles(extendedData, props), props.injectSvg && props.injectSvg()), props.children);
     };
 
     return ReactMinimalPieChart;
@@ -464,7 +512,11 @@ exports[`Dist bundle is unchanged 1`] = `
     labelStyle: stylePropType,
     onMouseOver: PropTypes.func,
     onMouseOut: PropTypes.func,
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
+    title: PropTypes.bool,
+    titlePosition: PropTypes.number,
+    titleStyle: stylePropType,
+    verticalSegmentPositioning: PropTypes.bool
   };
   ReactMinimalPieChart.defaultProps = {
     cx: 50,
@@ -483,7 +535,10 @@ exports[`Dist bundle is unchanged 1`] = `
     labelPosition: 50,
     onMouseOver: undefined,
     onMouseOut: undefined,
-    onClick: undefined
+    onClick: undefined,
+    title: false,
+    titlePosition: 112,
+    verticalSegmentPositioning: false
   };
 
   exports.default = ReactMinimalPieChart;

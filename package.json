@@ -112,7 +112,7 @@
   },
   "size-limit": [
     {
-      "limit": "3 KB",
+      "limit": "3.05 KB",
       "path": "./es/index.js"
     }
   ],
