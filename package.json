@@ -2,9 +2,9 @@
   "name": "react-minimal-pie-chart",
   "version": "6.0.1",
   "description": "Lightweight but versatile SVG pie/donut charts for React",
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "jsnext:main": "es/index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "jsnext:main": "dist/index.js",
   "browser": "dist/index.js",
   "types": "src/types/index.d.ts",
   "files": [
@@ -33,7 +33,6 @@
     "preversion": "npm run prepare",
     "version": "git add package.json",
     "postversion": "git push && git push --tags",
-    "prepare": "npm run test:source && npm run compile && npm run test:bundles",
     "start": "start-storybook -p 9001 -c .storybook",
     "storybook:deploy": "storybook-to-ghpages",
     "storybook:build": "build-storybook"
